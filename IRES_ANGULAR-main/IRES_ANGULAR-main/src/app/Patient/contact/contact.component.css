@@ -1,0 +1,93 @@
+.article.special {
+    background: #d2d2d282;
+    border: none;
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+    margin-bottom: 30px;
+    border-radius: 4px;
+    font-family: 'Varela Round', sans-serif;
+}
+.car{
+    display: flex;
+    flex-wrap: nowrap;
+}
+p{
+    padding-top: 5px !important;
+    padding-left: 6px;
+} 
+.article {
+    background: #fff;
+    padding: 25px 15px 15px;
+    border: 1px solid #cbd1d8;
+    margin-bottom: 30px;
+    text-align: left;
+    border-radius: 5px;
+    transition: all .4s ease-in-out;
+    font-family: 'Varela Round', sans-serif;
+}
+.btn{
+    background-color: #009fe3 !important;
+}
+.box-shadow {
+    -webkit-box-shadow: 0px 10px 27px 0px rgb(154 161 171 / 18%);
+    box-shadow: 0px 10px 27px 0px rgb(154 161 171 / 18%);
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -ms-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+    position: relative;
+    display: block;
+    top: 0;
+}
+
+.article.special p {
+    color: #8c9398;
+    font-family: 'Roboto,Arial';
+}
+.article.special .article__title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    color: #009fe3;
+}
+
+.article__title h3 {
+    display: block;
+    color: #009fe3;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 14px;
+    margin-top: 15px;
+    
+}
+h5{
+    font-family: "Montserrat" , sans-serif;
+   
+    font-size: 1.47em;
+}
+.special-head:after{
+    content: " ";
+    border: solid 2px #009fe3;
+    display: block;
+    width: 35px;
+    margin: 25px auto;
+}
+
+.main-content1 {
+    margin-top: 70px;
+    padding: 30px 15px;
+    margin-bottom: 30px;
+    min-height: calc(50vh - 123px);
+}
+textarea{
+    min-height:200px
+}
+/* a revoir ca  */
+.alert {
+   
+    padding: .75rem 0.25rem;
+  }
+  

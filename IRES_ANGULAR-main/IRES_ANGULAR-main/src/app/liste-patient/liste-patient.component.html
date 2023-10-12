@@ -1,0 +1,395 @@
+<div class="main-content">
+    <div class="container-fluid">
+       <div class="row">
+          <div class="col-md-12">
+              <div class="card">
+                  <div class="card-header card-header-danger">
+                    <div class="car"><i class="material-icons">groups</i>  <p> Patients </p>
+                    </div>
+                  </div>
+                   <div class="card-body">
+                     <form (ngSubmit)="f.form.valid"  #f="ngForm"> 
+                            <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                      <input type="text"     placeholder="Patient" class="form-control" 
+                                       name ="nomPatient" (keyup)="onKey(nomPatient.value)"  #nomPatient='ngModel' [(ngModel)]="form.nomPatient" pattern="^[a-zA-Z]+( [a-zA-Z]+)*$" >
+                                       <small class="text-danger" *ngIf="nomPatient.errors?.pattern"> Nom invalide</small>
+                                    </div>
+                                </div>
+                                  <div class="input-group col-md-2">
+                                  <button [disabled]="f.form.invalid" title="Rechercher" mat-raised-button type="button" class=" btn btn-white btn-round btn-just-icon" (click)="retrievePatientPag()">
+                                    <i class="material-icons">search</i>
+                                    <div class="ripple-container"></div>
+                                </button> 
+                            </div>
+                            </div>
+                        </form>  
+                        <div  class="table-responsive" >
+                         <table class="table">
+                              <thead class=" text-primary">
+                                  <th>
+                                      Patient 
+                                  </th>
+                                  <th>
+                                      Date de Naisssance 
+                                  </th>
+                                  <th>
+                                      Ville
+                                  </th>
+                                  <th>
+                                      Téléphone
+                                  </th>
+                                  <th>
+                                      Action
+                                  </th>
+                              </thead>
+                              <tbody>
+                                  <tr *ngFor="let p of patients | paginate : {
+                                      itemsPerPage: pageSize,
+                                      currentPage: page,
+                                      totalItems: count
+                                    };
+                              let i = index"
+                              [class.active]="i == currentIndex"
+                              (click)="setActiveElement(p, i)">
+                                      <td>   
+                                          {{p.user.nomComplet}}
+                                      </td>
+                                      <td>
+                                        {{p.user.dateNaissance}}
+                                      </td>
+                                      <td>
+                                        {{p.user.ville}}
+                                         
+                                      </td>
+                                      <td>
+                                        {{p.user.telephone}}
+                                      </td>
+                                       <td class="text-primary" >
+                                        <a href="#up"
+                                    data-toggle="modal"> <span class="material-icons" title="Visualiser">
+                                      visibility
+                                      </span></a> </td></tr>
+                                </tbody>
+                             </table>
+                          <div class="col-md-12" *ngIf="count === 0">
+                            <p  class="text-center" >Aucun patient trouvé.</p>
+                          </div>
+                          <div class="rowL"  *ngIf="count != 0">
+                            <div class="col-md-2">
+                       Afficher :
+                       <select class="custom-select" (change)="handlePageSizeChange($event)" >       
+                        <option *ngFor="let size of pageSizes" [ngValue]="size">
+                          {{ size }}
+                        </option>
+                      </select>
+                    </div> 
+                    <div >
+                      <pagination-controls
+                        previousLabel="Prec"
+                        nextLabel="Suiv"
+                        responsive="true"
+                        (pageChange)="handlePageChange($event)"
+                      ></pagination-controls>
+                        </div>
+                        </div>
+                        </div>
+                  </div>
+              </div>
+          </div>
+          <div *ngIf="currentElement" class="modal fade" id="up" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #Update>
+            <div class="modal-dialog modal-xl" role="document">
+                <!--Content-->
+                    <div class="modal-content">
+                        <!--Header-->
+                       <div class="modal-header">
+                          <div class="card">
+                         <div class="card-header card-header-danger">
+                              <h4>Informations patient</h4> 
+                          </div>
+                         <div class="card-body">
+                              <mat-tab-group  mat-align-tabs="center"  dynamicHeight  dynamicWeight> 
+                                <mat-tab >   
+                                  <ng-template mat-tab-label>
+                                 <h5>Comptes rendus de résultats </h5>
+                              </ng-template>
+                                 <div>
+                                 <div class="card-body2">
+                          <br>
+                    <form (ngSubmit)="f.form1.valid"  #f="ngForm">
+                          <div class="row">
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                  <input type="text"  placeholder="Numéro Dossier" class="form-control" name ="numDossierCRR1"
+                                  #numDossierCRR1='ngModel' (keyup)="onKey1(numDossierCRR1.value)"   [(ngModel)]="form1.numDossierCRR1"   pattern="[a-zA-Z/0-9]{1,30}" >
+                                <small class="text-danger" *ngIf="numDossierCRR1.errors?.pattern"> Numéro Invalide</small>
+                                </div>
+                              </div>
+                          <div class="col-md-3">
+                                <div class="form-group">
+                                    <input type="text" title="Date début" #box3 (keyup)="onKey1(box3.value)"   onfocus="(this.type='date')" (change)="elog(dateDebut)"  placeholder="Date Début" class="form-control form-control-alternative" name ="dateDebut" [(ngModel)]="dateDebut" >
+                                  </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                  <div class="form-group">
+                                      <input type="text" title="Date fin" #box4 (keyup)="onKey1(box4.value)" onfocus="(this.type='date')"   (change)="elog(dateFin)"  placeholder="Date Fin" class="form-control form-control-alternative" name ="dateFin" [(ngModel)]="dateFin" >
+                                      <small class="text-danger" *ngIf="dateInvalide"> Date de fin doit être supérieure à date de début </small>
+                                    </div>
+                                  </div>
+
+
+                                <div class="input-group col-md-2">
+                                <button [disabled]="f.form.invalid || dateInvalide" title="Rechercher" mat-raised-button type="button" class=" btn btn-white btn-round btn-just-icon" (click)="retrieveCrrPatientMedecin()">
+                                  <i class="material-icons">search</i>
+                                  <div class="ripple-container"></div>
+                              </button> 
+                            
+                          </div>
+                          </div>
+                        
+                          
+                        
+                        
+                        
+                      
+                  </form>  
+                      <div  class="table-responsive centerr" >
+                      
+                        <table class="table">
+                            <thead class=" text-primary">
+                                <th>
+                                    Numéro dossier 
+                                </th>
+                                <th>
+                                    Date
+                                </th>
+                            
+                                <th>
+                                    Compte rendu
+                                </th>
+                              
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let c of crr | paginate : {
+                                    itemsPerPage: pageSize1,
+                                    currentPage: page1,
+                                    totalItems: count1
+                                  };
+                            let i = index"
+                            [ngStyle] ="c.compterendu.statutCRRMedecin == false?{'background-color':'#dee2e680'}:{}"
+                          
+                            >
+                                    <td>
+                                        {{c.compterendu.numDossier}}
+                                    </td>
+                                    <td>
+                                        {{c.compterendu.dateCreation | date :'dd/MM/yyyy'}}
+                                    </td>
+                                  
+                                  
+                                    <td>
+                                      <a title="Pdf" href={{c.compterendu.path}}  (click)="OpenPdf(c)"
+                                      data-toggle="modal" data-target="#myModal">
+                                        <img class="img"  [src]= "urlAssets+'img/pdf.png'"  />
+
+                                    </a>
+
+                                  
+                                
+                                    </td>
+                                
+                                </tr>
+                            
+                              
+                              
+                                  
+                            </tbody>
+
+                        
+
+
+
+                        </table>
+                        <div class="col-md-12" *ngIf="count1 === 0">
+                        <p  class="text-center" >Aucun CRR trouvé.</p>
+                      </div>
+                        <div class="rowL" *ngIf="count1 != 0">
+                          <div class="col-md-2">
+                    Afficher : 
+                      <select class="custom-select"  (change)="handlePageSizeChange1($event)" >
+                        <!-- <option label=" "></option> -->
+                        <option *ngFor="let size1 of pageSizes1" [ngValue]="size1">
+                          {{ size1 }}
+                        </option>
+                      </select>
+                  </div> 
+                  <div >
+                    <pagination-controls
+                      previousLabel="Prec"
+                      nextLabel="Suiv"
+                      responsive="true"
+                      (pageChange)="handlePageChange1($event)"
+                    ></pagination-controls>
+
+                      </div>
+                      </div>
+                      </div>
+                           </div>
+                                </div>
+                             </mat-tab>
+                                 <mat-tab  >  
+                                  <ng-template mat-tab-label>
+                                    <h5>Informations </h5>
+                                 </ng-template>
+                                   <div >
+                                     <div class="card-body2">
+                                         <form>
+                                         <div class="car1"><i class="material-icons ico">feed</i>  <h5 >Profil</h5></div>
+                                           <div >
+                                             <div class="row">
+                                               <div class="col-lg-6">
+                                                 <div class="form-group">
+                                                   <label class="form-control-label" for="input-username">Nom</label>
+                                                   <input  type="text" class="form-control form-control-alternative" placeholder="-" name ="nom" disabled     
+                                                   [(ngModel)]="currentElement.user.nom">
+                                                </div>
+                                               </div>
+                                           <div class="col-lg-6">
+                                                <div class="form-group">
+                                                  <label class="form-control-label" for="input-username">Prénom</label>
+                                                  <input  type="text"  class="form-control form-control-alternative" placeholder="-" name ="prenom" disabled     
+                                                  [(ngModel)]="currentElement.user.prenom">
+                                               </div>
+                                              </div>
+                                             
+                                             </div>
+        
+                                             <div class="row">
+                                              <div class="col-lg-6">
+                                                <div class="form-group">
+                                                  <label class="form-control-label" for="input-username">Ipp</label>
+                                                  <input title ="Identifiant Permanent du Patient" type="text" class="form-control form-control-alternative" placeholder="-" name ="ipp" disabled     
+                                                  [(ngModel)]="currentElement.ipp">
+                                               </div>
+                                              </div>
+        
+        
+                                              <div class="col-lg-6">
+                                               <div class="form-group">
+                                                 <label class="form-control-label" for="input-username">Date de Naissance</label>
+                                                 <input  type="text"  class="form-control form-control-alternative" placeholder="-" name ="dateNaissance" disabled     
+                                                 [(ngModel)]="currentElement.user.dateNaissance">
+                                              </div>
+                                             </div>
+                                             </div>
+                                            </div>
+                                     <div class="car1"><i class="material-icons ico">call</i>  <h5 >Coordonnées</h5></div>
+                                             <div>
+                                            <div class="row">
+                                              <div class="col-lg-6">
+                                                <div class="form-group">
+                                                  <label class="form-control-label" for="input-username">Adresse</label>
+                                                  <input  type="text" class="form-control form-control-alternative" placeholder="-" name ="adresse" disabled     
+                                                  [(ngModel)]="currentElement.user.adresse">
+                                               </div>
+                                              </div>
+                                        <div class="col-lg-6">
+                                               <div class="form-group">
+                                                 <label class="form-control-label" for="input-username">Ville</label>
+                                                 <input  type="text"  class="form-control form-control-alternative" placeholder="-" name ="ville" disabled     
+                                                 [(ngModel)]="currentElement.user.ville">
+                                              </div>
+                                             </div>
+                                            
+                                            </div>
+        
+                                            <div class="row">
+                                             <div class="col-lg-6">
+                                               <div class="form-group">
+                                                 <label class="form-control-label" for="input-username">Téléphone</label>
+                                                 <input  type="text" class="form-control form-control-alternative" placeholder="-" name ="telephone" disabled     
+                                                 [(ngModel)]="currentElement.user.telephone">
+                                              </div>
+                                             </div>
+        
+        
+                                             <div class="col-lg-6">
+                                              <div class="form-group">
+                                                <label class="form-control-label" for="input-username">Email</label>
+                                                <input  type="text"  class="form-control form-control-alternative" placeholder="-" name ="email" disabled     
+                                                [(ngModel)]="currentElement.user.email">
+                                             </div>
+                                            </div>
+                                           
+                                           </div>
+                                          
+                                           
+                                          </div>
+                                         
+                                         
+                                         </form>
+                                       </div>
+                                     
+                                   </div>
+                              
+                             </mat-tab>
+                            
+                               
+           
+                               </mat-tab-group>
+           
+                             </div>
+                            
+                             </div>  
+                            <!--/.card-->
+                        </div>
+                        <!--/.modal header-->
+                        <div class="modal-footer">
+                          <input type="button" class="btn btn-sm btn-secondary" data-dismiss="modal" value="Fermer" >
+                          
+                        </div>
+                    </div>
+               
+            </div>
+          </div>
+
+
+
+
+      </div>
+
+
+    </div>
+  </div>
+  
+
+ 
+
+
+<div *ngIf='open'  class="modal fade"  id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+   
+          <!--Content-->
+          <div class="modal-content">
+              <!--Header-->
+         
+              <div class="modal-body" >
+              
+                <iframe [src]='urlSafe' class="resp-iframe" frameborder="0"
+                webkitallowfullscreen mozallowfullscreen allowfullscreen>
+               </iframe> 
+                 
+              </div>
+              
+              <div class="modal-footer">
+                
+                  <input type="button" class="btn btn-sm btn-secondary"  data-dismiss="modal" value="Fermer">
+                 
+                
+              </div>
+          </div>
+     
+  </div>
+</div>

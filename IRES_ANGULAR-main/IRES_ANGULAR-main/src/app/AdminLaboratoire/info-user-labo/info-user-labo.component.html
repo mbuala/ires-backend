@@ -1,0 +1,222 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    
+                    <div class="card-header card-header-danger">
+                             
+                        <h4>Fiche Utilisateur Labo </h4> 
+                    </div>
+                    <div class="card-body">
+                        <mat-tab-group mat-align-tabs="center" dynamicHeight >
+                            <mat-tab >
+                                <ng-template mat-tab-label>
+                                    <h5>Informations </h5>
+                                 </ng-template>
+                                <div >
+                                    <div class="card-body">
+                                        <form>
+                                            
+                                            <div class="car"><i class="material-icons ico">feed</i>  <h5 >Profil</h5></div>
+
+                                            <div class="pl-lg-4">
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label class="form-control-label"
+                                                                for="input-username">Identifiant</label>
+                                                            <input type="text" id="input-username"
+                                                                class="form-control form-control-alternative"
+                                                                placeholder="Identifiant" value="{{ identifiant }}"
+                                                                disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label class="form-control-label"
+                                                                for="input-first-name">Nom</label>
+                                                            <input type="text" id="input-first-name"
+                                                                class="form-control form-control-alternative"
+                                                                placeholder="nom" value="{{liste.nom}}"
+                                                                disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label class="form-control-label"
+                                                                for="input-last-name">Prénom</label>
+                                                            <input type="text" id="input-last-name"
+                                                                class="form-control form-control-alternative"
+                                                                placeholder="Prénom"
+                                                                value="{{liste.prenom}}" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label class="form-control-label"
+                                                                for="input-last-name">Cin</label>
+                                                            <input type="text" id="input-last-name"
+                                                                class="form-control form-control-alternative"
+                                                                placeholder="cin" value="{{liste.cin}}"
+                                                                disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr class="my-4" />
+                                            <!-- Address -->
+                                            <div class="car"><i class="material-icons ico">call</i>  <h5 >Coordonnées</h5></div>
+
+                                            <div class="pl-lg-4">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label class="form-control-label"
+                                                                for="input-address">Adresse</label>
+                                                            <input id="input-address"
+                                                                class="form-control form-control-alternative"
+                                                                placeholder="Adresse"
+                                                                value="{{liste.adresse}}" type="text"
+                                                                disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <label class="form-control-label"
+                                                                for="input-city">Ville</label>
+                                                            <input type="text" id="input-city"
+                                                                class="form-control form-control-alternative"
+                                                                placeholder="ville" value="{{liste.ville}}"
+                                                                disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <label class="form-control-label"
+                                                                for="input-country">Téléphone</label>
+                                                            <input type="text" id="input-country"
+                                                                class="form-control form-control-alternative"
+                                                                placeholder="telephone"
+                                                                value="{{liste.telephone}}" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <label class="form-control-label"
+                                                                for="input-country">Email</label>
+                                                            <input type="text" id="input-postal-code"
+                                                                class="form-control form-control-alternative"
+                                                                placeholder="email"
+                                                                value="{{liste.email}}" disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            
+                            </mat-tab>
+                         
+                            <mat-tab >
+                                <ng-template mat-tab-label>
+                                    <h5>Traçabilité </h5>
+                                 </ng-template>
+                                 <div class="container-fluid">
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="card-body">
+                                                <form>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <input type="text" class="form-control" placeholder="Type activité"
+                                                                [(ngModel)]="filterTerm" name="filterTerm">
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <input type="date" #box3 (keyup)="onKey(box3.value)"
+                                                               
+                                                                class="form-control form-control-alternative" name="searchdate"
+                                                                [(ngModel)]="searchdate">
+                                                        </div>
+                                                        <div class="input-group col-md-1">
+                                                            <button title="Rechercher" mat-raised-button type="button"
+                                                                class=" btn btn-white btn-round btn-just-icon"
+                                                                (click)="getdatebytracabilite()">
+                                                                <i class="material-icons">search</i>
+                                                                <div class="ripple-container"></div>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped table-hover">
+                                                        <thead class=" text-primary">
+                                                            <th>
+                                                                Activité
+                                                            </th>
+                                                            <th>
+                                                                Type activité
+                                                            </th>
+                                                            <th>
+                                                                Date
+                                                            </th>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr *ngFor="let trace of tracabilite.historique| filter:filterTerm | paginate : {
+                                                                itemsPerPage: tableSize,
+                                                                currentPage: page,
+                                                                totalItems: count
+                                                              };
+                                                             let i = index" [class.active]="i == currentIndex ">
+                                                                <td>
+                                                                    {{trace.message}}
+                                                                </td>
+                                                                <td>
+                                                                    {{trace.activite.nomActivite}}
+                                                                </td>
+                                                                <td>
+                                                                    {{trace.createdAt | date: 'dd/MM/yyyy HH:mm:ss'}}
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <div class="col-md-12" *ngIf="tailleTracabilite === 0">
+                                                        <p  class="text-center" >Aucune traçabilité trouvée.</p>
+                                                      </div>
+                                                    <div class="rowL" *ngIf="tailleTracabilite != 0">
+                                                        <div class="col-md-2">
+                                                            <select class="custom-select" (change)="onTableSizeChange($event)"
+                                                                class="custom-select">
+                                                                <option *ngFor="let size of tableSizes" [ngValue]="size">
+                                                                    {{ size }}
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                        <div>
+                                                            <pagination-controls responsive="true" p
+                                                            previousLabel="Précédent" nextLabel="Suivant" 
+                                                            (pageChange)="onTableDataChange($event)">
+                                                            </pagination-controls>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                            </div>
+                        </div>
+                    </div>
+                            </mat-tab>
+                        </mat-tab-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+</div>

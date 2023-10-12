@@ -1,0 +1,218 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                  <div class="card-header card-header-danger">
+                    <div class="car"><i class="material-icons ">groups</i>  <p>Médecins prescripteurs </p>
+                       </div>
+                </div>
+                    <div class="card-body">
+                       <div class="row"> 
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <input type="text"  (keyup)="onKey(nomMedecin.value)" placeholder="Nom Médecin"  class="form-control form-control-alternative" name ="nomMedecin" #nomMedecin='ngModel' [(ngModel)]="form.nomMedecin"
+                                        pattern="^[a-zA-Z]+( [a-zA-Z]+)*$">
+                                        <small class="text-danger" *ngIf="nomMedecin.errors?.pattern"> Nom invalide</small>
+                                     </div>
+                                 </div>
+                                 <div class="col-md-3">
+                                    <div class="form-group">
+                                          <input type="text"   (keyup)="onKey(specialite.value)" placeholder="Spécialité"  class="form-control form-control-alternative"  name ="specialite" #specialite='ngModel' [(ngModel)]="form.specialite" 
+                                          pattern="^[a-zA-Z]+( [a-zA-Z]+)*$">
+                                          <small class="text-danger" *ngIf="specialite.errors?.pattern"> Spécialité invalide</small>
+                                        </div>
+                                    </div>
+                                    <div class="input-group col-md-2">
+                                    <button title="Rechercher" mat-raised-button type="submit" class=" btn btn-white btn-round btn-just-icon" (click)="retrieveMedecinPatient('nom', 'ASC')">
+                                      <i class="material-icons">search</i>
+                                      <div class="ripple-container"></div>
+                                  </button> 
+                              </div>
+                              </div>
+                             <div  class="table-responsive" >
+                            <table class="table">
+                                <thead class=" text-primary">
+                                    <th>
+                                       <div class="hov">    Nom
+                                        <i *ngIf="ordrenom === 'DESC'"  class="material-icons exemple" (click)="retrieveMedecinPatient('nom', 'ASC' ); ordrenom = 'ASC'">south</i> 
+                                        <i *ngIf="ordrenom === 'ASC'" class="material-icons exemple" (click)="retrieveMedecinPatient('nom', 'DESC' ) ; ordrenom = 'DESC'">north</i>
+                                      </div>
+                                    </th>
+                                    <th>
+                                        <div class="hov">  Prénom     <i *ngIf="ordreprenom === 'DESC'" class="material-icons exemple" (click)="retrieveMedecinPatient('prenom', 'ASC' ); ordreprenom = 'ASC'">south</i> 
+                                          <i *ngIf="ordreprenom === 'ASC'" class="material-icons exemple" (click)="retrieveMedecinPatient('prenom', 'DESC' ) ; ordreprenom = 'DESC'">north</i> 
+                                        </div>  
+                                    </th>
+                                    <th>
+                                      Nom Complet
+                                    </th>
+                                    <th>
+                                      Spécialité
+                                    </th>
+                                    <th>
+                                      Téléphone
+                                    </th>
+                                    <th>
+                                       Action
+                                    </th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let medecin of listeMedecin | paginate : {
+                                        itemsPerPage: pageSize,
+                                        currentPage: page,
+                                        totalItems: count
+                                      };
+                                let i = index"   [class.active]="i == currentIndex"
+                                (click)="setActiveElement(medecin, i)">
+                                        <td>
+                                            {{medecin.user.nom}}
+                                        </td>
+                                        <td >
+                                            {{medecin.user.prenom}}
+                                        </td>
+                                        <td >
+                                          {{medecin.user.nomComplet}}
+                                      </td>
+                                        <td>
+                                            {{medecin.specialite}}
+                                        </td>
+                                        <td>
+                                            {{medecin.user.telephone}}
+
+                                        </td>
+                                        <td class="text-primary" >
+                                            <a  title="Détails" href="#up"
+                                        data-toggle="modal"> <span class="material-icons">
+                                          visibility
+                                          </span></a>
+                                        </td>
+                                    </tr>
+                               </tbody>
+                            </table>
+                            <div class="col-md-12" *ngIf="count === 0">
+                              <p  class="text-center" >Aucun médecin trouvé.</p>
+                            </div>
+                            <div class="rowL" *ngIf="count != 0">
+                                <div class="col-md-2">
+                          Afficher : 
+                            <select title="Nombre de lignes" class="custom-select" (change)="handlePageSizeChange($event)" >            
+                              <option *ngFor="let size of pageSizes" [ngValue]="size">
+                                {{ size }}
+                              </option>
+                            </select>
+                        </div> 
+                        <div >
+                          <pagination-controls
+                            previousLabel="Prec"
+                            nextLabel="Suiv"
+                            responsive="true"
+                            (pageChange)="handlePageChange($event)"
+                          ></pagination-controls>
+                            </div>
+                            </div>
+                          </div> 
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="currentElement" class="modal fade" id="up" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                        <!--Content-->
+                        <div class="modal-content">
+                            <!--Header-->
+                            <div class="modal-header">
+                              <div class="card">
+                                <div class="card-header card-header-danger">
+                                <h4> Informations Médecin</h4> 
+                              </div>
+                                <div class="card-body">
+                                    <div>
+                                       <div class="card-body2">
+                                          <form>
+                                            <div class="car"><i class="material-icons test">feed</i>  <h5 >Profil</h5></div>
+                                            <div >
+                                              <div class="row">
+                                                <div class="col-lg-6">
+                                                  <div class="form-group">
+                                                    <label class="form-control-label" for="input-username">Nom</label>
+                                                    <input  type="text" class="form-control form-control-alternative" placeholder="-" name ="nom" disabled     
+                                                    [(ngModel)]="currentElement.user.nom">
+                                                 </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                 <div class="form-group">
+                                                   <label class="form-control-label" for="input-username">Prénom</label>
+                                                   <input  type="text"  class="form-control form-control-alternative" placeholder="-" name ="prenom" disabled     
+                                                   [(ngModel)]="currentElement.user.prenom">
+                                                </div>
+                                               </div>
+                                              </div>
+                                              <div class="row">
+                                               <div class="col-lg-6">
+                                                 <div class="form-group">
+                                                   <label class="form-control-label" for="input-username">Specialité</label>
+                                                   <input  type="text" class="form-control form-control-alternative" placeholder="-" name ="specialite" disabled     
+                                                   [(ngModel)]="currentElement.specialite">
+                                                </div>
+                                               </div>
+                                               <div class="col-lg-6">
+                                                <div class="form-group">
+                                                  <label class="form-control-label" for="input-username">Date de Naissance</label>
+                                                  <input  type="text"  class="form-control form-control-alternative" placeholder="-" name ="dateNaissance" disabled     
+                                                  [(ngModel)]="currentElement.user.dateNaissance">
+                                               </div>
+                                              </div>
+                                             </div>                                         
+                                            </div>
+                                            <hr class="my-4" />
+                                            <div class="car"><i class="material-icons test">call</i>  <h5 >Coordonnées</h5></div>
+                                            <div>
+                                             <div class="row">
+                                               <div class="col-lg-6">
+                                                 <div class="form-group">
+                                                   <label class="form-control-label" for="input-username">Adresse</label>
+                                                   <input  type="text" class="form-control form-control-alternative" placeholder="-" name ="adresse" disabled     
+                                                   [(ngModel)]="currentElement.user.adresse">
+                                                </div>
+                                               </div>
+                                               <div class="col-lg-6">
+                                                <div class="form-group">
+                                                  <label class="form-control-label" for="input-username">Ville</label>
+                                                  <input  type="text"  class="form-control form-control-alternative" placeholder="-" name ="ville" disabled     
+                                                  [(ngModel)]="currentElement.user.ville">
+                                               </div>
+                                              </div>
+                                             </div>
+                                             <div class="row">
+                                              <div class="col-lg-6">
+                                                <div class="form-group">
+                                                  <label class="form-control-label" for="input-username">Téléphone</label>
+                                                  <input  type="text" class="form-control form-control-alternative" placeholder="-" name ="telephone" disabled     
+                                                  [(ngModel)]="currentElement.user.telephone">
+                                               </div>
+                                              </div>
+                                              <div class="col-lg-6">
+                                               <div class="form-group">
+                                                 <label class="form-control-label" for="input-username">Email</label>
+                                                 <input  type="text"  class="form-control form-control-alternative" placeholder="-" name ="email" disabled     
+                                                 [(ngModel)]="currentElement.user.email">
+                                              </div>
+                                             </div>
+                                            </div>
+                                           </div>
+                                          </form>
+                                        </div>
+                                    </div>
+                                 </div>
+                                 </div>  
+                            </div>
+                            <div class="modal-footer">
+                                <input type="button" class="btn btn-sm btn-secondary" data-dismiss="modal" value="Fermer">
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  

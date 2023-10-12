@@ -1,0 +1,115 @@
+@font-face {
+    font-family: "Montserrat";
+    src: url(fonts/Montserrat/Montserrat-Regular.ttf) format("truetype");
+}
+
+
+.col-md-4{
+    padding-left: 300px;
+    margin-left: 800;
+
+}
+.form-control {
+   
+    color: #66615b !important;
+    line-height: normal;
+    font-size: 14px;
+    transition: color .3s ease-in-out,border-color .3s ease-in-out,background-color .3s ease-in-out;
+    box-shadow: none;
+}
+.uf{
+    padding-top: 115px;
+}
+
+.test2{
+    padding-left: 300px;
+    margin-left: 800;
+}
+
+.btn{
+    background-color: #009fe3 !important;
+    padding: 6.5px 20px !important;
+    font-size: 11px !important;
+}
+
+legend {
+    
+    font-size : 0.9rem !important;
+    font-family: "Montserrat", sans-serif;
+   
+  
+  }
+  .feedback1 {
+    display: none;
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 80%;
+    color: #dc3545;
+}
+  
+.exemple{
+    padding-right: 300px;
+    margin-left: 800;
+}
+hr{
+    background-color : #009fe342!important;
+}
+.main-content {
+    margin-top: 20px !important;
+}
+
+.cardd{
+  
+    margin-left: 15%;
+    margin-right: 15%;
+}
+.car{
+    display: flex;
+    flex-wrap: nowrap;
+}
+i{
+    color: #009fe3;
+}
+
+.btn-info{
+    background-color: #009fe3 !important;
+
+}
+
+.btn-info:hover{
+    background-color: #009fe3 !important;
+}
+
+h5{
+    font-family: "Montserrat" , sans-serif;
+   color : #009fe3;
+    font-size: 1.37em;
+    padding-top: 5px !important;
+    padding-left: 6px;
+}
+label{
+    font-family: "Montserrat" , sans-serif;
+   
+    font-size: .8571em;
+    font-weight:550;
+}
+
+.field{
+    border: 9px;
+    background-color: none;
+}
+
+.card .card-body {
+   
+    padding-left: 50px !important;
+    
+}
+
+.input-group{
+    background-color: #e9ecef;
+  
+    border-color: #d8dde2;   
+}
+.labelCol{
+    color: #dc3545;
+}

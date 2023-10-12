@@ -1,0 +1,963 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+               
+                <div class="card">
+                    <div class="card-header card-header-danger">
+                             
+                        <h4>Liste des Utilisateurs</h4> 
+                    </div>
+                    <div class="card-body">
+
+                        <mat-tab-group mat-align-tabs="center" dynamicHeight >
+
+                            <mat-tab>
+                                <ng-template mat-tab-label>
+                                    <h5>Patients</h5>
+                                   </ng-template>
+
+                                   <div class="card-body">
+                                    <div class="row">
+
+                                     
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                           
+                                                <input  type="text" class="form-control" [(ngModel)]="filterTerm" name="filterTerm"  placeholder="Rechercher">
+                                            
+                                            </div>
+                                            
+                                        </div> 
+                                        <div class="col-md-1" >
+                                            <div class="form-group">
+                                            <i title="Nouveau patient" class="material-icons" data-toggle="modal"
+                                            data-target="#centralModalLg">
+                                                add_circle_outline
+                                            </i>
+                                         
+                                        </div>
+                                        </div>
+
+
+                                    </div>
+
+                               
+                                <div class="table-responsive">
+
+                                    <table class="table">
+                                        <thead class=" text-primary">
+                                            <th>
+                                                Identifiant
+                                            </th>
+                                            <th>
+                                                Nom Complet
+                                            </th>
+                                            <th>
+                                                Email
+                                            </th>
+                                            <th title ="Identifiant Permanent du Patient">
+                                                Ipp
+                                            </th>
+                                            <th>
+                                                Statut
+                                            </th>
+                                            <th>
+                                                Action
+                                            </th>
+                                        </thead>
+                                        <tbody>
+
+                                            <tr *ngFor="let user of PatientListe.patient | filter:filterTerm   | paginate : {
+                                                itemsPerPage: tableSize,
+                                                currentPage: page,
+                                                totalItems: count
+                                              };
+                                             let i = index" [class.active]="i == currentIndex "
+                                             [ngStyle]="user.user.isLock==true?{'background-color':'#dee2e680'}:{}"
+                                             >
+
+
+
+                                                <td>
+                                                    {{user.user.identifiant}}
+                                                </td>
+                                                <td>
+                                                    {{user.user.nomComplet}}
+                                                </td>
+                                                <td>
+                                                    {{user.user.email}}
+                                                </td>
+                                                <td>
+                                                    {{user.ipp}}
+                                                </td>
+                                                <td>
+                                                    <div  *ngIf="user.user.isLock==false;else loggedOut">
+                                                        actif
+                                                    </div>
+                                                    <ng-template #loggedOut>
+                                                        bloqué 
+                                                    </ng-template>
+                                                 
+                                                </td>
+                                                <td class="text-primary">
+                                                    
+                                                    <a type="button" href="#/adminLabo/infoPatient/{{user.user.identifiant}}"><img
+                                                         [src]= "logo+'icon/vue.png'" alt="" srcset="" 
+                                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Détails"
+                                                            ></a>
+                                                    
+
+                                                    <a type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Modifier"  href="#up" (click)="patient=user.user"
+                                                        data-toggle="modal"><img [src]= "logo+'icon/up.png'" 
+                                                            alt="" srcset=""></a>
+
+                                                               
+                                                     <a href="javascript:void(0)"  data-bs-toggle="tooltip" data-bs-placement="top" title="Débloquer"
+                                                            (click)="bloquer(user.user.identifiant);patient=user.user" *ngIf="user.user.isLock==true;else log">
+                                                            <img [src]= "logo+'icon/unlock.png'" alt="" srcset="">
+                                                           
+                                                     </a>
+
+
+                                                    <ng-template #log>
+                                                        <a href="javascript:void(0)"  data-bs-toggle="tooltip" data-bs-placement="top" title="Bloquer"
+                                                            (click)="debloquerUser(user.user.identifiant);patient=user.user"
+                                                                data-toggle="modal">
+                                                                <img [src]= "logo+'icon/lock.png'"  alt="" srcset="">
+                                                        </a>
+                                                    </ng-template>
+                                                    
+                                                </td>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="col-md-12" *ngIf="TailleListePatients === 0">
+                                        <p  class="text-center" >Aucun patient trouvé.</p>
+                                      </div>
+                                    <div class="rowL" *ngIf="TailleListePatients != 0">
+                                        <div class="col-md-2">
+                                            Afficher : 
+                                            <select title="Nombre de lignes à afficher"  class="custom-select" (change)="onTableSizeChange($event)"
+                                              >
+                                                <option *ngFor="let size of tableSizes"
+                                                    [ngValue]="size">
+                                                    {{ size }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <pagination-controls responsive="true"
+                                                previousLabel="Préc" nextLabel="Suiv"
+                                                (pageChange)="onTableDataChange($event)">
+                                            </pagination-controls>
+                                        </div>
+                                    </div>
+                                    
+                                    
+
+                                </div>
+                            </div>
+                            </mat-tab>
+                            <mat-tab>
+                                <ng-template mat-tab-label>
+                                    <h5>Médecins</h5>
+                                   </ng-template>
+                                   <div class="card-body">
+
+
+                                    <form>
+                                        <div class="row">
+                                            
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                               
+                                                    <input  type="text" class="form-control" [(ngModel)]="MedecinfilterTerm" name="MedecinfilterTerm"  placeholder="Rechercher">
+                                                
+                                                </div>
+                                            </div> 
+
+                                            <div class="col-md-1" >
+                                                <div class="form-group">
+                                                <i title="Nouveau médecin" class="material-icons" data-toggle="modal"
+                                                data-target="#creeMedecin">
+                                                    add_circle_outline
+                                                </i>
+                                              
+                                            </div>
+                                            </div>
+                                           
+
+                                            
+
+                                        </div>
+
+                                    </form>
+                                    <div class="table-responsive" >
+                                        <table class="table">
+                                            <thead class=" text-primary">
+                                                <th>
+                                                    Identifiant
+                                                </th>
+                                                <th>
+                                                    Nom Complet
+                                                </th>
+                                                <th>
+                                                    Email
+                                                </th>
+                                                <th>
+                                                    Spécialité
+                                                </th>
+                                                <th>
+                                                    Statut
+                                                </th>
+                                                <th>
+                                                    Action
+                                                </th>
+                                            </thead>
+                                            <tbody>
+
+                                                <tr
+                                                    *ngFor="let mede of MedecinListe.medecin | filter:MedecinfilterTerm  | paginate : {
+                                                        itemsPerPage: pageSize,
+                                                        currentPage: page,
+                                                        totalItems: count
+                                                      };
+                                                    let j = index"
+                                                    [ngStyle]="mede.user.isLock==true?{'background-color':'#dee2e680'}:{}"
+                                                    [class.active]="j == currentIndex" (click)="setActiveElement(user, j)"
+                                                    
+                                                    
+                                                    >
+
+
+
+                                                    <td>
+                                                        {{mede.user.identifiant}}
+                                                    </td>
+                                                    <td>
+                                                        {{mede.user.nomComplet}}
+                                                    </td>
+                                                    <td>
+                                                        {{mede.user.email}}
+                                                    </td>
+                                                    <td>
+                                                        {{mede.specialite}}
+                                                    </td>
+                                                    <td>
+                                                        <div  *ngIf="mede.user.isLock==false;else log">
+                                                           actif
+                                                        </div>
+                                                        <ng-template #log>
+                                                            bloqué
+                                                        </ng-template>
+                                                     
+                                                    </td>
+                                                    <td class="text-primary">
+
+                                                        <a href="#/adminLabo/infoMedecin/{{mede.user.identifiant}}"><img
+                                                            data-bs-toggle="tooltip" data-bs-placement="top" title="détails"  [src]= "logo+'icon/vue.png'"   alt="" srcset=""></a>
+                                                        
+
+                                                        <a href="#up" (click)="patient=mede.user"
+                                                            data-toggle="modal"><img [src]= "logo+'icon/up.png'"  
+                                                            data-bs-toggle="tooltip" data-bs-placement="top" title="mise à jour"     alt="" srcset=""></a>
+
+                                                            <a href="javascript:void(0)"  data-bs-toggle="tooltip" data-bs-placement="top" title="debloquer un compte"
+                                                            (click)="bloquer(mede.user.identifiant);patient=mede.user"
+                                                               
+                                                                *ngIf="mede.user.isLock==true;else loggedOut">
+                                                                <img [src]= "logo+'icon/unlock.png'" alt="" srcset="">
+                                                            </a>
+
+
+                                                            <ng-template #loggedOut>
+                                                                <a href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="bloquer un compte"
+                                                                (click)="debloquerUser(mede.user.identifiant);patient=user.user"
+                                                                 data-toggle="modal">
+                                                                    <img [src]= "logo+'icon/lock.png'"   alt="" srcset="">
+                                                                </a>
+                                                            </ng-template>
+
+                                                        
+                                                    </td>
+
+                                                </tr>
+
+
+
+                                            </tbody>
+
+                                        </table>
+                                        <div class="col-md-12" *ngIf="TailleListeMedecins === 0">
+                                            <p  class="text-center" >Aucun médecin trouvé.</p>
+                                          </div>
+                                        <div class="rowL" *ngIf="TailleListeMedecins != 0">
+                                            <div class="col-md-2"> 
+                                              
+                                                <select class="custom-select" (change)="onTableSizeChangeMedecin($event)" class="custom-select">
+                        
+                                                    <option *ngFor="let size of pageSizes" [ngValue]="size">
+                                                        {{ size }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <pagination-controls responsive="true" 
+                                            previousLabel="Précèdent" nextLabel="Suivant"
+                                            (pageChange)="onTableChangeMedecin($event)">
+                                            </pagination-controls>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </mat-tab>
+                            <mat-tab >
+                                <ng-template mat-tab-label>
+                                    <h5>Laboratoire</h5>
+                                   </ng-template>
+                                   <div class="card-body">
+
+
+                                    <form>
+                                        <div class="row">
+
+                                            
+                                            
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                               
+                                                    <input  type="text" class="form-control" [(ngModel)]="LabofilterTerm" name="LabofilterTerm"  placeholder="Rechercher">
+                                                
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-1" >
+                                                <div class="form-group">
+                                                <i title="Nouveau utilisateur labo" class="material-icons" data-toggle="modal"
+                                                data-target="#creeUserLabo">
+                                                    add_circle_outline
+                                                </i>
+                                               
+                                            </div>
+                                            </div>
+
+
+
+                                        </div>
+
+                                    </form>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead class=" text-primary">
+                                                <th>
+                                                    Identifiant
+                                                </th>
+                                                <th>
+                                                    Nom Complet
+                                                </th>
+                                                <th>
+                                                    Email
+                                                </th>
+                                               
+                                                <th>
+                                                    Role
+                                                </th>
+                                                <th>
+                                                    Statut
+                                                </th>
+                                                <th>
+                                                    Action
+                                                </th>
+                                            </thead>
+                                            <tbody>
+                                            
+                                                <tr *ngFor="let user of userListe.users | filter:LabofilterTerm ">
+                                                    
+
+                                                    <ng-container *ngIf="user.role.role=='userLabo' || user.role.role=='labo'">
+
+                                                        <td>
+                                                            {{user.identifiant}}
+                                                        </td>
+                                                        <td>
+                                                            {{user.nomComplet}} 
+                                                        </td>
+                                                        <td>
+                                                            {{user.email}}
+                                                        </td>
+                                                       
+                                                        <td>
+                                                           {{ user.role.description}}
+                                                        </td>
+                                                        <td>
+                                                            <div  *ngIf="user.isLock==false;else log">
+                                                               actif
+                                                            </div>
+                                                            <ng-template #log>
+                                                                bloqué 
+                                                            </ng-template>
+                                                         
+                                                        </td>
+                                                        <td class="text-primary">
+                                                            <a href="#/adminLabo/infoLabo /{{user.identifiant}}"><img
+                                                                data-bs-toggle="tooltip" data-bs-placement="top" title="détails"     [src]= "logo+'icon/vue.png'"  alt="" srcset=""></a>
+                                                           
+                                                            <a href="#up" (click)="patient=user" 
+                                                                data-toggle="modal"><img [src]= "logo+'icon/up.png'" 
+                                                                data-bs-toggle="tooltip" data-bs-placement="top" title="mise à jour"         alt="" srcset="">
+                                                            </a>
+                                                            <a href="javascript:void(0)"
+                                                            (click)="bloquer(user.identifiant);patient=user"  data-bs-toggle="tooltip" data-bs-placement="top" title="debloquer un compte"
+                                                            
+                                                                *ngIf="user.isLock==true;else loggedOut">
+                                                                <img [src]= "logo+'icon/unlock.png'" alt="" srcset="">
+                                                            </a>
+
+
+                                                            <ng-template #loggedOut>
+                                                                <a href="javascript:void(0)"  data-bs-toggle="tooltip" data-bs-placement="top" title="bloquer un compte"
+                                                                (click)="debloquerUser(user.identifiant);patient=user"
+                                                                
+                                                                    data-toggle="modal">
+                                                                    <img [src]= "logo+'icon/lock.png'"  alt="" srcset="">
+                                                                </a>
+                                                            </ng-template>
+                                                        </td>
+                                                    </ng-container>
+                                                   
+
+                                                   
+                                                </tr>
+
+                                            </tbody>
+
+                                        </table>
+                                        <div class="col-md-12" *ngIf="TailleListeLabo === 0">
+                                            <p  class="text-center" >Aucun utilisateur labo trouvé.</p>
+                                          </div>
+
+                                    </div>
+
+                                </div>
+
+                            </mat-tab>
+                        </mat-tab-group>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+   
+   
+    <div id="up" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+        aria-hidden="true" #Update>
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="card">
+                        <form name="ModifFor"  (ngSubmit)="fMis.form.valid" #fMis="ngForm" novalidate>
+                            <div class="card-header card-header-danger">
+                                <h4> Mise à jour des données</h4> 
+                            </div>
+                            <div class="card-body">
+                           
+
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label class="form-control-label" for="input-country">Identifiant</label>  <label for="" style="color: red;"> *</label> 
+
+                                            <input type="text" class="form-control" 
+                                                placeholder="identifiant" name="identifiant"
+                                                [(ngModel)]="patient.identifiant" disabled>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label class="form-control-label" for="input-country">Cin</label>
+
+                                            <input type="text" class="form-control"  placeholder="Cin"
+                                                [(ngModel)]="patient.cin" name="cin">
+                                        </div>
+                                     </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            
+                                            <label class="form-control-label" for="input-country">Nom</label>  <label for="" style="color: red;"> *</label> 
+                                            <input type="text" class="form-control" [(ngModel)]="patient.nom" name="nom"
+                                                disabled>
+                                         </div>
+                                        <div class="form-group col-md-6">
+                                             <label class="form-control-label" for="input-country">Prénom</label>  <label for="" style="color: red;"> *</label> 
+                                            <input type="text" class="form-control" 
+                                                placeholder="Prénom" [(ngModel)]="patient.prenom" name="prenom" disabled>
+                                         </div>
+                                       
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label class="form-control-label" for="input-country">Sexe</label>
+
+                                            <input type="text" class="form-control"  placeholder="Sexe"
+                                                [(ngModel)]="patient.sexe" name="sexe">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label class="form-control-label" for="input-country">Date de
+                                                Naissance</label>
+
+
+                                            <input type="date" datetime="yyyy-MM-dd" class="form-control"
+                                                 placeholder="Date de Naissance" name="dateNaissance"
+                                                [(ngModel)]="patient.dateNaissance">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                       
+                                        <div class="form-group col-md-12">
+                                            <label class="form-control-label" for="input-country">adresse </label>
+
+                                            <input type="text" class="form-control" 
+                                                [(ngModel)]="patient.adresse" name="adresse" placeholder="adresse">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label class="form-control-label" for="input-country">Ville</label>
+
+                                            <input type="text" class="form-control" 
+                                                placeholder="ville" [(ngModel)]="patient.ville"
+                                                name="ville">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label class="form-control-label" for="input-country">telephone</label>
+
+                                            <input type="text" class="form-control" 
+                                                placeholder="telephone" [(ngModel)]="patient.telephone"
+                                                name="telephone">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                       
+                                        <div class="form-group col-md-6">
+                                            <label class="form-control-label" for="input-country">Email</label>  <label for="" style="color: red;"> *</label> 
+
+                                            <input type="text" class="form-control" 
+                                                [(ngModel)]="patient.email" name="email" placeholder="email">
+                                        </div>
+                                    </div>
+
+
+                                
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal"
+                    #addPatient;>Annuler</button>
+                <button [disabled]="fMis.invalid" class="btn btn-sm btn-info" (click)="updateUser()">Enregistrer</button>
+                </div>
+
+                
+
+
+            </div>
+
+           
+
+        </div>
+    </div>
+
+    
+
+
+<!-- <div class="modal fade" #someModal id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="!submitted">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-center">
+                    <p class="heading">
+                        <img src="{{icon}}" alt="" srcset="">
+                       {{title}}
+                    </p>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+               
+                <div class="modal-body">
+                   <div *ngIf="loading==true">
+                       <p>{{message}}</p>
+                   </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                </div>
+            </div>
+        </div>
+</div> -->
+
+
+<!-- ajouter patient -->
+<div class="modal fade" id="centralModalLg" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true" #addPatient>
+    <div class="modal-dialog modal-xl" role="document">
+      
+        <div class="modal-content">
+          
+            <div class="modal-header">
+
+                <div class="card">
+                    <form name="form" id="form" (ngSubmit)="f.form.valid" #f="ngForm" novalidate>
+                <div class="card-header card-header-danger">
+                                 
+                    <h4>Ajouter Nouveau Patient</h4> 
+                  </div>
+                  <div class="card-body">
+                  
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="sel1">Nom :</label> <label for=""
+                                style="color: red;">*</label>
+                            <input type="text" class="form-control" name="nom" #nom="ngModel" [(ngModel)]="form.nom" required 
+                               placeholder="Nom" 
+                                pattern="^[a-zA-Z]+( [a-zA-Z]+)*$">
+                            
+                             
+                              <small class="text-danger" *ngIf="nom.errors?.pattern"> Nom invalide</small> 
+
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="sel1">Prénom
+                                :</label> <label for="" style="color: red;">*</label>
+                            <input type="text" class="form-control" placeholder="Prénom" name="prenom"  [(ngModel)]="form.prenom" required #prenom="ngModel"
+                                pattern="^[a-zA-Z]+( [a-zA-Z]+)*$">
+                               
+                             <small class="text-danger" *ngIf="prenom.errors?.pattern"> Prénom invalide</small>  
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="sel1">Sexe :</label> <label for=""
+                                style="color: red;">*</label>
+                            <select class="form-control"  name="sexe"
+                                [(ngModel)]="form.sexe" required #sexe="ngModel"
+                                [ngClass]="{ 'is-invalid': submitted && sexe.errors && formvalue==false }">
+                                <option value="masculin" selected>masculin</option>
+                                <option value="feminin">feminin</option>
+
+                            </select>
+                          
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="sel1">Date de
+                                Naissance :</label> <label for="" style="color: red;">*</label>
+                            <input type="date" class="form-control" 
+                                placeholder="Date de Naissance" name="dateNaissance"   [(ngModel)]="form.dateNaissance" required #dateNaissance="ngModel"
+                                [ngClass]="{ 'is-invalid': submitted && dateNaissance.errors && formvalue==false }" />
+                           
+                        </div>
+                    </div>
+             
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="sel1">Cin :</label>
+
+                            <input type="text" class="form-control" 
+                                placeholder="Cin" name="cin"  [(ngModel)]="form.cin"  #cin="ngModel" pattern="[a-zA-Z/0-9]{1,30}">
+                                <small class="text-danger" *ngIf="cin.errors?.pattern"> Cin Invalide</small>
+
+
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label  for="sel1">Ipp :</label> <label for=""
+                                style="color: red;">*</label>
+                            <input title ="Identifiant Permanent du Patient" type="text" name="ipp" class="form-control"
+                                placeholder="ipp"  [(ngModel)]="form.ipp" required #ipp="ngModel"
+                                [ngClass]="{ 'is-invalid': submitted && ipp.errors && formvalue==false }" pattern="[a-zA-Z/0-9]{1,30}">
+                         
+                            <small class="text-danger" *ngIf="ipp.errors?.pattern"> Ipp Invalide</small>
+
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="sel1">adresse :</label>
+                            <input type="text" class="form-control" 
+                                placeholder="adresse" name="adresse" [(ngModel)]="form.adresse"  #adresse="ngModel" >
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="sel1">Ville :</label>
+                            <input type="text" name="ville" [(ngModel)]="form.ville"  #ville="ngModel" class="form-control"
+                                placeholder="ville" pattern="^[a-zA-Z]+( [a-zA-Z]+)*$">
+                                <small class="text-danger" *ngIf="ville.errors?.pattern"> Ville invalide</small>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="sel1">Téléphone:</label>
+                            <input type="text" name="telephone" [(ngModel)]="form.telephone"  #telephone="ngModel" class="form-control"
+                                placeholder="téléphone" pattern="[0-9/+ ]{0,30}">
+                                <small class="text-danger" *ngIf="telephone.errors?.pattern"> Téléphone invalide</small>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="sel1">Email
+                                :</label> <label for="" style="color: red;">*</label>
+                            <input type="email" name="email" [(ngModel)]="form.email" required #email="ngModel" class="form-control"
+                                placeholder="email"
+                                [ngClass]="{ 'is-invalid': submitted && email.errors && formvalue==false }" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}">
+                          
+                            
+                                    <small class="text-danger" *ngIf="email.errors?.pattern"> Email invalide</small>
+                      
+                    </div>
+                  </div>
+                  </div>
+                </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button   type="button" class="btn btn-sm btn-secondary" data-dismiss="modal"
+                #addPatient;>Fermer</button>
+                <button [disabled]="f.form.invalid" class="btn btn-sm btn-info" (click) ="onSubmit()"> Ajouter</button>
+                
+            </div>
+      
+        </div>
+    
+</div>
+</div>
+
+<!-- ajouter medecin -->
+<div class="modal fade" id="creeMedecin" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true" #addMedecin>
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="card">
+                    <form name="formMed"  (ngSubmit)="f1.formMed.valid" #f1="ngForm" novalidate >
+                        <div class="card-header card-header-danger">
+                             <h4>Ajouter nouveau médecin</h4> 
+                        </div>  
+                        <div class="card-body">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="sel1">Nom :</label> <label for=""
+                                        style="color: red;">*</label>
+                                    <input  type="text" class="form-control"
+                                        placeholder="Nom" name="nom" #nomMed="ngModel" [(ngModel)]="formMed.nom" required
+                                          
+                                        pattern="^[a-zA-Z]+( [a-zA-Z]+)*$">
+                                  
+                                    <small class="text-danger" *ngIf="nomMed.errors?.pattern"> Nom invalide</small>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="sel1">Prenom
+                                        :</label> <label for="" style="color: red;">*</label>
+                                    <input type="text"
+                                        name="prenom" #prenomMed="ngModel" [(ngModel)]="formMed.prenom"  required class="form-control" placeholder="Prénom"
+                                       
+                                        pattern="^[a-zA-Z]+( [a-zA-Z]+)*$">
+                                   
+                                    <small class="text-danger" *ngIf="prenomMed.errors?.pattern"> Prénom invalide</small>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="sel1">Sexe
+                                        :</label> <label for="" style="color: red;">*</label>
+                                    <select class="form-control" name="sexe" #sexeMed="ngModel" [(ngModel)]="formMed.sexe" required
+                                      
+                                        >
+                                        <option value="masculin" selected>masculin</option>
+                                        <option value="feminin">feminin</option>
+                                    </select>
+                                  
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="sel1">Cin :</label>
+                                    <input type="text" class="form-control" 
+                                        placeholder="Cin" name="cin" #cinMed="ngModel" [(ngModel)]="formMed.cin" pattern="[a-zA-Z/0-9]{1,30}">
+                                        <small class="text-danger" *ngIf="cinMed.errors?.pattern"> Cin Invalide</small>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                             
+                                <div class="form-group col-md-6">
+                                    <label for="sel1">spécialité :</label>
+                                    <input type="text" name="specialite" #specialiteMed="ngModel" [(ngModel)]="formMed.specialite" class="form-control"
+                                        placeholder="specialite" pattern="^[a-zA-Z]+( [a-zA-Z]+)*$" />
+                                        <small class="text-danger" *ngIf="specialiteMed.errors?.pattern"> Spécialité Invalide</small>
+
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="sel1">Ville :</label>
+                                    <input type="text" class="form-control" 
+                                        placeholder="ville" name="ville" #villeMed="ngModel" [(ngModel)]="formMed.ville" pattern="^[a-zA-Z]+( [a-zA-Z]+)*$">
+                                        <small class="text-danger" *ngIf="villeMed.errors?.pattern"> Ville invalide</small>
+
+                                    </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="sel1">Adresse :</label>
+                                    <input type="text" class="form-control" 
+                                        placeholder="adresse" name="adresse" #adresseMed="ngModel" [(ngModel)]="formMed.adresse">
+                                </div>
+                              
+                                
+                               
+
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="sel1">Telephone :</label>
+                                    <input type="text" class="form-control" placeholder="telephone"  name="telephone" #telephoneMed="ngModel" [(ngModel)]="formMed.telephone" 
+                                        pattern="[0-9/+ ]{0,30}" />
+                                        <small class="text-danger" *ngIf="telephoneMed.errors?.pattern"> Téléphone invalide</small>
+
+                                    </div>
+                                <div class="form-group col-md-6">
+                                    <label for="sel1">Email
+                                        :</label> <label for="" style="color: red;">*</label>
+                                    <input type="text" name="email" #emailMed="ngModel" [(ngModel)]="formMed.email" class="form-control" required
+                                        placeholder="email"
+                                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}"/>
+                                  
+                                    <small class="text-danger" *ngIf="emailMed.errors?.pattern"> Email invalide</small>
+
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal"
+                #addPatient;>Fermer</button>
+            <button [disabled]="f1.invalid" class="btn btn-sm btn-info" (click)="onCreateMedecin()"> Ajouter</button>
+            </div>
+        </div>
+    </div>
+</div>
+     
+<!-- ajouter user labo -->
+<div class="modal fade bd-example-modal-xl" id="creeUserLabo" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true" #addUserLabo>
+    <div class="modal-dialog modal-xl" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header">
+                <div class="card">
+                    <form name="formLab"   #f2="ngForm" novalidate>
+                        <div class="card-header card-header-danger">
+                            <h4 class="modal-title">Ajouter nouveau utilisateur labo </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="modal-body">
+
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="sel1">Nom :</label> <label for="" style="color: red;">
+                                            *</label>
+
+                                        <input  type="text" class="form-control"
+                                        placeholder="Nom" name="nom" #nomLab="ngModel" [(ngModel)]="formLab.nom" required
+                                          
+                                        pattern="^[a-zA-Z]+( [a-zA-Z]+)*$">
+                                        <small class="text-danger" *ngIf="nomLab.errors?.pattern"> Nom invalide</small>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="sel1">Prénom
+                                            :</label> <label for="" style="color: red;">*</label>
+                                        <input  type="text"
+                                        name="prenom" #prenomLab="ngModel" [(ngModel)]="formLab.prenom"  required class="form-control" placeholder="Prénom"
+                                       
+                                        pattern="^[a-zA-Z]+( [a-zA-Z]+)*$">
+                                        <small class="text-danger" *ngIf="prenomLab.errors?.pattern"> Prénom invalide</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="sel1">Téléphone :</label>
+                                        <input type="text" name="telephone" #telephoneLab="ngModel" [(ngModel)]="formLab.telephone" 
+                                        pattern="[0-9/+ ]{0,30}" class="form-control"
+                                            placeholder="telephone" />
+                                            <small class="text-danger" *ngIf="telephoneLab.errors?.pattern"> Téléphone invalide</small>
+
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="sel1">Email
+                                            :</label> <label for="" style="color: red;">*</label>
+                                        <input type="email" name="email" #emailLab="ngModel" [(ngModel)]="formLab.email" required class="form-control"
+                                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}"  placeholder="email"
+                                          />
+                                          <small class="text-danger" *ngIf="emailLab.errors?.pattern"> Email invalide</small>
+
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+
+                                        <label for="sel1">Role :</label> <label for=""
+                                            style="color: red;">*</label>
+                                        <select class="form-control"  name="role" [(ngModel)]="formLab.role" >
+                                        
+                                            <option value="userLabo" >utilisateur Labo</option>
+                                            <option value="adminLabo"
+                                                *ngIf="role=='adminSilogik'|| role=='labo'">admin Labo</option>
+                                            <option value="adminSilogik" *ngIf="role=='adminSilogik'">admin
+                                                Silogik</option>
+
+                                        </select>
+                                     
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="sel1">Adresse :</label>
+                                        <input type="text" class="form-control" 
+                                            placeholder="adresse" name="adresse" #adresseLab="ngModel" [(ngModel)]="formLab.adresse">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="sel1">Cin :</label>
+                                        <input type="text" class="form-control" id="inputEmail4"
+                                            placeholder="Cin"name="cin" #cinLab="ngModel" [(ngModel)]="formLab.cin" pattern="[a-zA-Z/0-9]{1,30}">
+                                            <small class="text-danger" *ngIf="cinLab.errors?.pattern"> Cin Invalide</small>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="sel1">Sexe :</label> <label for=""
+                                            style="color: red;">*</label>
+                                        <select class="form-control"  name="sexe" #sexeLab="ngModel" [(ngModel)]="formLab.sexe" required
+                                           >
+                                            <option value="masculin" selected>masculin</option>
+                                            <option value="feminin">feminin</option>
+                                        </select>
+                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                       
+                   
+                </div>
+                <!--/.card-->
+            </div>
+            <!--/.modal header-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal"
+                    #addPatient;>Fermer</button>
+
+                <button [disabled]="f2.invalid" class="btn btn-info" (click)="onUserLabo()"> Ajouter</button>
+
+            </div>
+        </div>
+    </div>
+</div>

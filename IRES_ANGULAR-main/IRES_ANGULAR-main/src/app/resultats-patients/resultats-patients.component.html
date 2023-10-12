@@ -1,0 +1,138 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-danger">
+                        <div class="car"><i class="material-icons">content_paste</i>  <p>Les comptes rendus de résultats </p>
+                           </div>
+                    </div>
+                    <div class="card-body">
+                       <form (ngSubmit)="f.form.valid"  #f="ngForm"> 
+                              <div class="row">
+                                <div class="col-md-3">
+                                  <div class="form-group">
+                                      <input type="text"  placeholder="Numéro Dossier" class="form-control" name ="numDossier"
+                                      #numDossier='ngModel' (keyup)="onKey(numDossier.value)"   [(ngModel)]="form.numDossier"   pattern="[a-zA-Z/0-9]{1,30}" >
+                                   <small class="text-danger" *ngIf="numDossier.errors?.pattern"> Numéro Invalide</small>
+                                    </div>
+                                  </div>
+                               <div class="col-md-3">
+                                    <div class="form-group">
+                                          <input type="text"     placeholder="Patient" class="form-control" 
+                                           name ="nomPatient" (keyup)="onKey(nomPatient.value)"  #nomPatient='ngModel' [(ngModel)]="form.nomPatient" pattern="^[a-zA-Z]+( [a-zA-Z]+)*$" >
+                                           <small class="text-danger" *ngIf="nomPatient.errors?.pattern"> Nom invalide</small>
+                                        </div>
+                                    </div>
+                                  <div class="col-md-2">
+                                    <div class="form-group">
+                                        <input type="text" #box2  (keyup)="onKey(box2.value)"  onfocus="(this.type='date')"   placeholder="Date Début" class="form-control form-control-alternative" name ="dateDebut" [(ngModel)]="dateDebut" >
+                                      </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                      <div class="form-group">
+                                          <input type="text" #box3  (keyup)="onKey(box3.value)"  onfocus="(this.type='date')" (change)="elog(dateFin)"  placeholder="Date Fin" class="form-control form-control-alternative" name ="dateFin" [(ngModel)]="dateFin" >
+                                          <small class="text-danger" *ngIf="dateInvalide"> Date de fin doit être supérieure à date de début </small>
+                                        </div>
+                                      </div>
+                                   <div class="col-md-1">
+                                    <button  [disabled]="f.form.invalid || dateInvalide" title="Rechercher" title="Rechercher" mat-raised-button type="button" class=" btn btn-white btn-round btn-just-icon" (click)="retrieveCrrPag('dateCreation', 'DESC')">
+                                      <i class="material-icons">search</i>
+                                      <div class="ripple-container"></div>
+                                  </button> 
+                              </div>
+                              </div>
+                             </form>  
+                          <div  class="table-responsive" >
+                            <table class="table">
+                                <thead class=" text-primary">
+                                    <th>
+                                     <div class="hov">   Numéro dossier 
+                                        <i *ngIf="ordreNumDossier === 'DESC'"  class="material-icons exemple" (click)="retrieveCrrPag('numDossier', 'ASC' ); ordreNumDossier = 'ASC'">south</i> 
+                                        <i *ngIf="ordreNumDossier === 'ASC'" class="material-icons exemple" (click)="retrieveCrrPag('numDossier', 'DESC' ) ; ordreNumDossier = 'DESC'">north</i>
+                                      </div>
+                                      </th>
+                                    <th>
+                                   <div class="hov">  Date      <i *ngIf="ordreDate === 'DESC'" class="material-icons exemple" (click)="retrieveCrrPag('dateCreation', 'ASC' ); ordreDate = 'ASC'">south</i> 
+                                                <i *ngIf="ordreDate === 'ASC'" class="material-icons exemple" (click)="retrieveCrrPag('dateCreation', 'DESC' ) ; ordreDate = 'DESC'">north</i> 
+                                              </div>  
+                                    </th>
+                                    <th>
+                                        Patient
+                                    </th>
+                                    <th>
+                                        Compte rendu
+                                    </th>
+                                  
+                                </thead>
+                                <tbody>
+                                    <tr  *ngFor="let c of crr | paginate : {
+                                        itemsPerPage: pageSize,
+                                        currentPage: page,
+                                        totalItems: count
+                                      };
+                                let i = index"
+                                [ngStyle] ="c.compterendu.statutCRRPatient == false?{'background-color':'#dee2e680'}:{}"
+                                [class.active]="i == currentIndex"
+                                (click)="setActiveElement(c, i)">
+                                <td class="test" >
+                                    {{c.compterendu.numDossier}}
+                                </td>
+                                <td>
+                                    {{c.compterendu.dateCreation | date :'dd/MM/yyyy'}}
+                                </td>
+                                <td>
+                                    {{c.patient.user.nomComplet}}
+                                </td>
+                                <td>
+                                  <a title="Pdf" href={{c.compterendu.path}}  (click)="OpenPdf(c)"
+                                  data-toggle="modal" data-target="#myModal">
+                                    <img class="img" [src]= "urlAssets+'img/pdf.png'"   />
+                                  </a>
+                                </td>
+                               </tr>
+                                </tbody>
+                              </table>
+                            <div class="col-md-12" *ngIf="count === 0">
+                              <p  class="text-center" >Aucun CRR trouvé.</p>
+                            </div>
+                            <div class="rowL" *ngIf="count != 0">
+                              <div class="col-md-2">
+                        Afficher : 
+                          <select class="custom-select" (change)="handlePageSizeChange($event)" >
+                            <option *ngFor="let size of pageSizes" [ngValue]="size">
+                              {{ size }}
+                            </option>
+                          </select>
+                      </div> 
+                      <div>
+                        <pagination-controls
+                          previousLabel="Prec"
+                          nextLabel="Suiv"
+                          responsive="true"
+                          (pageChange)="handlePageChange($event)"></pagination-controls>
+                          </div>
+                          </div>
+                          </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+</div>
+<div *ngIf='open'  class="modal fade"  id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+          <!--Content-->
+          <div class="modal-content">
+              <!--Header-->
+              <div class="modal-body">
+                <iframe [src]='urlSafe' class="resp-iframe" frameborder="0"
+                webkitallowfullscreen mozallowfullscreen allowfullscreen>
+               </iframe> 
+              </div>
+              <div class="modal-footer">
+                  <input type="button" class="btn btn-sm btn-secondary"  data-dismiss="modal" value="Fermer">
+              </div>
+          </div>
+  </div>
+</div>

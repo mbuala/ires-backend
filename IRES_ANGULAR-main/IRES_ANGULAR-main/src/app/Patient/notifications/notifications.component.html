@@ -1,0 +1,256 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div *ngIf="role=='medecin' || role=='patient'; then thenblock else elseblock">
+        </div>
+        <ng-template #thenblock>
+            <div class="card">
+                <div class="card-header card-header-danger">
+                    <h3 class="card-title">Notifications</h3>
+                </div>
+                <div class="card-body">
+                    <form (ngSubmit)="f.form.valid"  #f="ngForm">
+                        <div class="row">
+                            <div class="col-md-3" *ngIf="role=='patient' || role=='medecin'">
+                                <div class="form-group">
+                                    <select  class="form-control" id="sel1" name="typenotification" 
+                                        [(ngModel)]="typenotification"  >
+                                        <option value ="" disabled selected hidden >Type de notification : </option>
+                                        <option value="Nouveau médecin" *ngIf="role=='patient'">nouveau medecin</option>
+                                        <option value="Nouveau patient" *ngIf="role=='medecin'">nouveau patient</option>
+                                        <option value="compte rendu" *ngIf="role=='patient'|| role=='medecin'">compte
+                                            rendu </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input type="text"  placeholder="Date" onfocus="(this.type='date')" class="form-control" name="searchdate" [(ngModel)]="searchdate" (keyup)="onKey(searchdate)" 
+                                       >
+                                </div>
+                            </div>
+                            <div class="input-group col-md-1">
+                                <button  title="Rechercher" mat-raised-button class=" btn btn-white btn-round btn-just-icon"  (click)="getNotification('dateNotification', 'DESC')">
+                                    <i class="material-icons">search</i>
+                                    <div class="ripple-container"></div>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="table-responsive">
+                                    <div class="table-full-width">
+                                        <table class="table">
+                                            <thead class=" text-primary">
+                                                <th>  
+                                                    <div class="hov">   Type de notification
+                                                        <i *ngIf="ordreTypeNotification === 'DESC'"  class="material-icons exemple" (click)="getNotification('typeNotification', 'ASC' ); ordreTypeNotification = 'ASC'">south</i> 
+                                                        <i *ngIf="ordreTypeNotification === 'ASC'" class="material-icons exemple" (click)="getNotification('typeNotification', 'DESC' ) ; ordreTypeNotification = 'DESC'">north</i>
+                                                      </div>
+                                                </th>
+                                                <th>
+                                                    Description
+                                                </th>
+                                                <th>
+                                                    <div class="hov">   Date
+                                                        <i *ngIf="ordreDate  === 'DESC'"  class="material-icons exemple" (click)="getNotification('createdAt', 'ASC' ); ordreDate  = 'ASC'">south</i> 
+                                                        <i *ngIf="ordreDate  === 'ASC'" class="material-icons exemple" (click)="getNotification('createdAt', 'DESC' ) ; ordreDate  = 'DESC'">north</i>
+                                                      </div>
+                                                </th>
+                                                <th>
+                                                    Statut
+                                                </th>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let notif of Notification  | paginate : {
+                                                    itemsPerPage: pageSize,
+                                                    currentPage: page,
+                                                    totalItems: count
+                                                  };
+                                            let i = index" [class.active]="i == currentIndex"
+                                                    (click)="setActiveElement1(notif, i)">
+                                                    <td>
+                                                        {{notif.typeNotification}}                                                 
+                                                    </td>
+                                                    <td>
+                                                        {{notif.description}}
+                                                    </td>
+                                                    <td>
+                                                        {{notif.dateNotification | date :'dd/MM/yyyy'}}
+                                                    </td>
+                                                    <td *ngIf="notif.status==false">
+                                                            <i class="material-icons"
+                                                            style="color: green;">  notification_important</i>
+                                                    </td>
+                                                    <td *ngIf="notif.status==true">
+                                                        <i class="material-icons">notifications</i>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="col-md-12" *ngIf="count === 0">
+                                            <p  class="text-center" >Aucune notification trouvée.</p>
+                                          </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="rowL" *ngIf="count != 0">
+                                <div class="col-md-2">
+                                    Afficher
+                                    <select class="custom-select" (change)="NotificationhandlePageSizeChange($event)"
+                                        class="custom-select">
+                                        <option *ngFor="let size of pageSizes" [ngValue]="size">
+                                            {{ size }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <pagination-controls previousLabel="Prec" nextLabel="Suiv" responsive="true"
+                                        (pageChange)="NotificationhandlePageChange($event)"></pagination-controls>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template #elseblock>
+            <div class="card">
+                <div class="card-header card-header-danger">
+                    <h3 class="card-title">Réclamations</h3></div>
+                <div class="card-body">
+                    <form (ngSubmit)="f.form.valid"  #f="ngForm"> 
+                        <div class="row">
+                           <div class="col-md-3">
+                              <div class="form-group">
+                                  <select class="form-control" id="sel1" name ="roleUser" #role='ngModel' [(ngModel)]="roleUser">
+                                     <option value ="" disabled selected hidden >Role : </option>
+                                  <option value="patient" >Patient</option>
+                                  <option value="medecin">Médecin</option>
+                              </select>
+                               </div>
+                              </div>
+                              <div class="col-md-3">
+                              <div class="form-group">
+                                <input  type="text" title ="Date" onfocus="(this.type='date')" value="Date" placeholder="Date" class="form-control form-control-alternative" name ="date" [(ngModel)]="date" >
+                               </div>
+                              </div>
+                                <div class="col-md-1">
+                              <button [disabled]="f.form.invalid || dateInvalide" title="Rechercher" title="Rechercher" mat-raised-button type="button" class=" btn btn-white btn-round btn-just-icon" (click)="retrieveReclamationsPag('date', 'DESC')">
+                                <i class="material-icons">search</i>
+                                <div class="ripple-container"></div>
+                            </button>                         
+                        </div>
+                        </div>
+                </form>  
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="table-responsive">
+                                    <div class="table-full-width">
+                                        <table class="table">
+                                            <tr class=" text-primary">
+                                                <th>
+                                                    Nom 
+                                                </th>
+                                                <th>
+                                                    Prénom
+                                                </th>
+                                                <th>
+                                                   Nom Complet
+                                                </th>
+                                                <th>
+                                                    Role
+                                                </th>
+                                                <th style="text-align: center;">
+                                                    Message
+                                                </th>
+                                                <th>
+                                                    Date
+                                                </th>
+                                            </tr>
+                                            <tbody>
+                                            <tr *ngFor="let recla of reclamations  | paginate : {
+                                                itemsPerPage: pageSize,
+                                                currentPage: page,
+                                                totalItems: count1
+                                              };
+                                        let i = index" [class.active]="i == currentIndex"
+                                        (click)="setActiveElement(recla.message, i)"   >
+                                                <td>
+                                                    {{recla.user.nom}}
+                                                </td>
+                                                <td>
+                                                    {{recla.user.prenom}}
+                                                </td>
+                                                <td>
+                                                    {{recla.user.nomComplet}}
+                                                </td>
+                                                <td>
+                                                    {{recla.user.role.role}}
+                                                </td>
+                                                <td class="message">
+                                                 {{recla.message | slice:0:70}}<a href="#up"  data-toggle="modal"> Lire la suite </a>
+                                                </td>
+
+                                                <td> 
+                                                    {{recla.date | date: 'dd-MM-yyyy'}} 
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        </table>
+                                        <div class="col-md-12" *ngIf="count1 === 0">
+                                            <p  class="text-center" >Aucune réclamation trouvée.</p>
+                                          </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="rowL" *ngIf="count1 != 0">
+                                <div class="col-md-2">
+                                    Afficher :  
+                                    <select class="custom-select"
+                                    (change)="ReclamationhandlePageSizeChange($event)" class="custom-select">
+                                        <option *ngFor="let size of pageSizes" [ngValue]="size">
+                                            {{ size }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <pagination-controls 
+                                    previousLabel="Prec" 
+                                    nextLabel="Suiv"
+                                     responsive="true"
+                                (pageChange)="ReclamationhandlePageChange($event)"></pagination-controls>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </div>
+</div>
+
+
+<div *ngIf="message" class="modal fade" id="up" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header">
+              <div class="card">
+                <div class="card-header card-header-danger"> 
+                <h4>Message</h4> 
+              </div>
+                <div class="card-body justify">
+                {{this.message}}
+                </div>
+                 <br>
+                 </div>  
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-sm btn-secondary" data-dismiss="modal" value="Fermer">
+            </div>
+        </div>
+    </div>
+</div>

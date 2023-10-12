@@ -1,0 +1,701 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+      
+        <div class="col-md-3">
+            <div >
+                <div class="card card-chart">
+                    <div class="card-header card-header-success heightHeader">
+                        <!-- <div class="ct-chart" id="dailySalesChart"></div> -->
+                    </div>
+                    <!-- <div class="card-body">
+                        <h4 class="card-title" style="color: grey;">COMPTES PATIENTS</h4>
+                        <p class="card-category">
+                            <span class="text-success">
+                                TOTALE : {{NbrPatient}} </span>
+                        </p>
+                        <p class="card-category" style="color: green;">ACTIFS <i class="fa fa-long-arrow-up"></i> :
+                            {{countPatient.user}}</p>
+                    </div> -->
+                    <div class="card-body text-center">
+                        <!-- <h4 class="card-title" style="color: grey;">Comptes Médecins</h4> -->
+                        <p style="color: grey;" >COMPTES PATIENTS</p>
+                        <div class="row" style="color: green; font-size: '13px';">
+                            <span class="col"> TOTALE : {{NbrPatient}} </span>
+                            <span class="col"> ACTIFS :  {{countPatient.user}}</span>
+                            <!-- <span class="text-success">
+                                TOTALE : {{NbrMedecin}} </span>
+                                <span>  ACTIFS :   {{countmedecin.user}} </span> -->
+                            </div>
+                      <br>
+                      <div >
+                        <button type="button" class="btn btn-info" data-toggle="modal"
+                            data-target="#centralModalLg">Nouveau Patient</button>
+                    </div>
+                    </div>
+                  
+                </div>
+            </div>
+            <div>
+                <div class="card card-chart">
+                    <div class="card-header card-header-warning heightHeader">
+                        <!-- <div class="ct-chart" id="websiteViewsChart"></div> -->
+                    </div>
+                    <div class="card-body text-center">
+                        <!-- <h4 class="card-title" style="color: grey;">Comptes Médecins</h4> -->
+                        <p style="color: grey;" >COMPTES MEDECINS</p>
+                        <div class="row" style="color: green; font-size: '13px';">
+                            <span class="col"> TOTALE : {{NbrMedecin}} </span>
+                            <span class="col"> ACTIFS : {{countmedecin.user}}</span>
+                            <!-- <span class="text-success">
+                                TOTALE : {{NbrMedecin}} </span>
+                                <span>  ACTIFS :   {{countmedecin.user}} </span> -->
+                            </div>
+
+                      <br>
+                      <div >
+                        <button type="button" class="btn btn-info"  data-toggle="modal"
+                            data-target="#creeMedecin">
+                            Nouveau Médecin</button>
+                    </div>
+                    </div>
+               
+                </div>
+            </div>
+            <!-- <div >
+                <div class="card card-chart">
+                    <div class="card-header card-header-danger heightHeader">
+                         <div class="ct-chart" id="completedTasksChart"></div> 
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                           
+                            <div class="col-md-6">
+                                <br>
+                                <button type="button" class="btn btn-info" mat-raised-button data-toggle="modal"
+                                    data-target="#creeUserLabo">
+                                    Créer Compte Labo</button>
+                            </div>
+                            <div class="col-md-6">
+                                <form>
+                                    <div class="col-md-4" >
+                                        <label>Ajouter un fichier .xlsx</label>
+                                        <input class="form-control form-control-sm" id="formFileSm" type="file"
+                                            name="image" (change)="selectImage($event)" accept=".xlsx" required />
+                                    </div>
+                                    <br>
+                                    <div class="mb-3" *ngIf="showbtn==true">
+                                        <button type="submit" class="btn btn-info" (click)="onSave()">Charger le Fichier 
+                                            </button>
+                                    </div>
+                                </form>  
+                              
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <div class="col-md-9">
+            <div >
+                <div class="card">
+
+                    <div class="card-header card-header-danger">
+                        <h4 class="card-title" style="text-align: center; color: rgb(255, 255, 255); font-weight: 900;">
+                            CRR DU JOUR : {{countcrr}}</h4>
+                    </div>
+                    <div class="card-body table-responsive ">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input type="text" placeholder ="Date" onfocus="(this.type='date')"   (keyup)="onKey(searchDate)"
+                                        class="form-control form-control-alternative" name="searchDate"
+                                        [(ngModel)]="searchDate">
+                                </div>
+                            </div>
+                            <div class="input-group col-md-1">
+                                <button title="Rechercher" mat-raised-button type="button" class=" btn btn-white btn-round btn-just-icon"
+                                    (click)="getCRRDuJour(searchDate)">
+                                    <i class="material-icons">search</i>
+                                    <div class="ripple-container"></div>
+                                </button>
+                            </div>
+                            <table class="table table-hover">
+                                <thead class="text-center" style="color:#2196f3;font-weight: 900;">
+                                    <th>N° Dossier</th>
+                                    <th>Patient </th>
+                                    <th>Médecin Prescripteur</th>
+                                    <th>Date de Création</th>
+                                    <th> Compte Rendu</th>
+                                </thead>
+                                <tbody *ngFor="let p of ListeCRR | paginate : {
+                                    itemsPerPage: pageSize,
+                                    currentPage: page,
+                                    totalItems: count
+                                  };
+                            let i = index">
+                                    <tr class="text-center" *ngFor="let data of p.permission">
+                                        <td>{{p.numDossier}}</td>
+                                        <td>{{data.patient.user.nomComplet}}</td>
+                                        <td *ngIf="data.medecin==null">
+
+                                        </td>
+                                        <td *ngIf="data.medecin!=null">
+                                            {{data.medecin.user.nomComplet}}
+
+                                        </td>
+
+                                        <td>
+                                            {{p.dateCreation | date: 'dd/MM/yyyy' }}
+                                        </td>
+                                        <td >
+                                            <a title="Pdf" href="{{p.path}}" (click)="valueUser=p.path;getpath(p)"
+                                                data-toggle="modal" data-target="#myModal">
+                                                <img  [src]= "urlAssets+'img/pdf.png'"  />
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="col-md-12" *ngIf="count === 0">
+                                <p  class="text-center" >Aucun CRR trouvé.</p>
+                              </div>
+                                   <br>
+                            <div class="rowL" *ngIf="count != 0" >
+                                <div  class="col-md-8">
+                          Afficher : 
+                            <select title="Nombre de lignes à afficher" class="custom-select" (change)="handlePageSizeChange($event, searchDate)" >
+                              <!-- <option label=" "></option> -->
+                              <option *ngFor="let size of pageSizes" [ngValue]="size">
+                                {{ size }}
+                              </option>
+                            </select>
+                        </div> 
+                        <div class="col-md-8" >
+                          <pagination-controls
+                            previousLabel="Prec"
+                            nextLabel="Suiv"
+                            responsive="true"
+                            (pageChange)="handlePageChange($event, searchDate)"
+                          ></pagination-controls>
+  
+                            </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-danger" role="alert" *ngIf='verif'>
+                            <p style="text-align: center; color: rgb(255, 255, 255); font-weight: 900;">{{errorMessage}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+      
+    </div>
+</div>
+  <!-- bloquer -->
+  <div id="showMessage" class="modal fade top" #unlock>
+    <div class="modal-dialog">
+        <div class="modal-content text-center  ">
+            <form>
+                <div class="modal-header d-flex justify-content-center">
+                    <p class="heading">
+                    </p>
+                </div>
+                <div class="modal-body">
+                    <p>ETES VOUS SUR DE VOULOIR DEBLOQUER CE COMPTE?</p>
+                    <p class="text-warning"><small>.</small></p>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-danger" data-dismiss="modal" value="Annuler"
+                        #CloseUpdate>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- ajouter patient -->
+<div class="modal fade" id="centralModalLg" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true"   >
+    <div class="modal-dialog modal-xl" role="document">
+      
+        <div class="modal-content">
+          
+            <div class="modal-header">
+
+                <div class="card">
+                    <form [formGroup]="form">
+                <div class="card-header card-header-danger">
+                                 
+                    <h4>Ajouter Nouveau Patient</h4> 
+                  </div>
+                  <div class="card-body">
+                  
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="sel1">Nom :</label> <label for=""
+                                style="color: red;">*</label>
+                            <input type="text" class="form-control"
+                                 placeholder="Nom" formControlName="nom"
+                                [ngClass]="{ 'is-invalid': submitted && f.nom.errors && formvalue==false}" pattern="^[a-zA-Z]+( [a-zA-Z]+)*$">
+                            <div *ngIf="submitted && f.nom.errors && formvalue==false"
+                                class="invalid-feedback">
+                                <div *ngIf="f.nom.errors.required && formvalue==false">nom est
+                                    obligatoire</div>
+                            </div>
+                            <small class="text-danger" *ngIf="f.nom.errors?.pattern"> Nom invalide</small>
+
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="sel1">Prénom
+                                :</label> <label for="" style="color: red;">*</label>
+                            <input type="text"
+                                formControlName="prenom" class="form-control" placeholder="Prénom"
+                                [ngClass]="{ 'is-invalid': submitted && f.prenom.errors && formvalue==false }" pattern="^[a-zA-Z]+( [a-zA-Z]+)*$">
+                            <div *ngIf="submitted && f.prenom.errors && formvalue==false"
+                                class="invalid-feedback">
+                                <div *ngIf="f.prenom.errors.required && formvalue==false">Prénom est
+                                    obligatoire</div>
+                            </div>
+                            <small class="text-danger" *ngIf="f.prenom.errors?.pattern"> Prénom invalide</small>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="sel1">Sexe :</label> <label for=""
+                                style="color: red;">*</label>
+                            <select class="form-control"  formControlName="sexe"
+                               
+                                [ngClass]="{ 'is-invalid': submitted && f.sexe.errors && formvalue==false }">
+                                <option value="masculin" selected>masculin</option>
+                                <option value="feminin">feminin</option>
+
+                            </select>
+                            <div *ngIf="submitted && f.sexe.errors && formvalue==false"
+                                class="invalid-feedback">
+                                <div *ngIf="f.sexe.errors.required && formvalue==false">sexe est
+                                    obligatoire</div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="sel1">Date de
+                                Naissance :</label> <label for="" style="color: red;">*</label>
+                            <input type="date" class="form-control" 
+                                placeholder="Date de Naissance" formControlName="dateNaissance"
+                                [ngClass]="{ 'is-invalid': submitted && f.dateNaissance.errors && formvalue==false }" />
+                            <div *ngIf="submitted && f.dateNaissance.errors && formvalue==false"
+                                class="invalid-feedback">
+                                <div *ngIf="f.dateNaissance.errors.required && formvalue==false">
+                                    dateNaissance est
+                                    obligatoire</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="sel1">Cin :</label>
+
+                            <input type="text" class="form-control" 
+                                placeholder="Cin" formControlName="cin" pattern="[a-zA-Z/0-9]{1,30}">
+                                <small class="text-danger" *ngIf="f.cin.errors?.pattern"> Cin Invalide</small>
+
+
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label  for="sel1">Ipp :</label> <label for=""
+                                style="color: red;">*</label>
+                            <input title ="Identifiant Permanent du Patient" type="text" formControlName="ipp" class="form-control"
+                                placeholder="ipp"
+                                [ngClass]="{ 'is-invalid': submitted && f.ipp.errors && formvalue==false }" pattern="[a-zA-Z/0-9]{1,30}">
+                            <div *ngIf="submitted && f.ipp.errors && formvalue==false"
+                                class="invalid-feedback">
+                                <div *ngIf="f.ipp.errors.required && formvalue==false">Ipp est
+                                    obligatoire</div>
+                            </div>
+                            <small class="text-danger" *ngIf="f.ipp.errors?.pattern"> Ipp Invalide</small>
+
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="sel1">adresse :</label>
+                            <input type="text" class="form-control" 
+                                placeholder="adresse" formControlName="adresse">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="sel1">Ville :</label>
+                            <input type="text" formControlName="ville" class="form-control"
+                                placeholder="ville" pattern="^[a-zA-Z]+( [a-zA-Z]+)*$">
+                                <small class="text-danger" *ngIf="f.ville.errors?.pattern"> Ville invalide</small>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="sel1">Téléphone:</label>
+                            <input type="text" formControlName="telephone" class="form-control"
+                                placeholder="téléphone" pattern="[0-9/+ ]{0,30}">
+                                <small class="text-danger" *ngIf="f.telephone.errors?.pattern"> Téléphone invalide</small>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="sel1">Email
+                                :</label> <label for="" style="color: red;">*</label>
+                            <input type="email" formControlName="email" class="form-control"
+                                placeholder="email"
+                                [ngClass]="{ 'is-invalid': submitted && f.email.errors && formvalue==false }" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}">
+                            <div *ngIf="submitted && f.email.errors && formvalue==false"
+                                class="invalid-feedback">
+                                <div *ngIf="usermed.email.errors.required && formvalue==false">email
+                                    est obligatoire</div> </div>
+                                    <small class="text-danger" *ngIf="f.email.errors?.pattern"> Email invalide</small>
+                        </div>
+                    </div>
+             
+                  </div>
+                 
+                </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" (click)="viderModal()" data-dismiss="modal"
+              >Fermer</button>
+                <button  class="btn btn-sm btn-info" (click) ="onSubmit()"> Ajouter</button>
+                
+            </div>
+      
+        </div>
+    
+</div>
+</div>
+     
+        
+
+<!-- ajouter medecin -->
+<div class="modal fade" id="creeMedecin" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true" #addMedecin>
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="card">
+                    
+                    <form [formGroup]="mede" >
+                        <div class="card-header card-header-danger">
+                             <h4>Ajouter Nouveau Médecin</h4> 
+                        </div>  
+                        <div class="card-body">
+                            <div class="form-row">
+                                <div class="col-md-3">
+                                 <label>Ajouter un fichier .xlsx</label>
+                                        <input class="form-control-file"  id="formFileSm" #inputFile type="file"
+                                            name="image" (change)="selectImage($event)" accept=".xlsx" required />
+                                    
+                                </div>
+                                   
+                                    <div class="col-md-3 tesst" *ngIf="showbtn==true">
+                                        <button type="submit" class="btn btn-sm btn-info" (click)="onSave()">Charger le Fichier 
+                                            </button>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <i title="Respectez l'ordre suivant des colonnes : nom, prénom, email, ville, adresse, téléphone, cin, sexe, spécialité " class="material-icons tesstBull" *ngIf="showbtn != true">info</i>   
+                                      
+                                        
+                                    </div>
+                              
+                            </div>
+                            <br/>
+                            <div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="sel1">Nom :</label> <label for=""
+                                        style="color: red;">*</label>
+                                    <input  type="text" class="form-control"
+                                        id="input1" placeholder="Nom" formControlName="nom"
+                                        [ngClass]="{ 'is-invalid': submitted && usermed.nom.errors && medecinvalue==false }" 
+                                        pattern="^[a-zA-Z]+( [a-zA-Z]+)*$" >
+                                    <div *ngIf="submitted && usermed.nom.errors && medecinvalue==false"
+                                        class="invalid-feedback">
+                                        <div *ngIf="usermed.nom.errors.required && medecinvalue==false">nom
+                                            est obligatoire</div>
+                                    </div>
+                                    <small class="text-danger" *ngIf="usermed.nom.errors?.pattern"> Nom invalide</small>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="sel1">Prenom
+                                        :</label> <label for="" style="color: red;">*</label>
+                                    <input type="text" id="input2"
+                                        formControlName="prenom" class="form-control" placeholder="Prénom"
+                                        [ngClass]="{ 'is-invalid': submitted && usermed.prenom.errors && medecinvalue==false }"
+                                        pattern="^[a-zA-Z]+( [a-zA-Z]+)*$" enabled>
+                                    <div *ngIf="submitted && usermed.prenom.errors && medecinvalue==false"
+                                        class="invalid-feedback">
+                                        <div *ngIf="usermed.prenom.errors.required && medecinvalue==false">
+                                            Prénom est obligatoire</div>
+                                    </div>
+                                    <small class="text-danger" *ngIf="usermed.prenom.errors?.pattern"> Prénom invalide</small>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="input3">Sexe
+                                        :</label> <label for="" style="color: red;">*</label>
+                                    <select class="form-control" id="input3" formControlName="sexe"
+                                       
+                                        [ngClass]="{ 'is-invalid': submitted && usermed.sexe.errors  && medecinvalue==false  }" enabled>
+                                        <option value="masculin" selected>masculin</option>
+                                        <option value="feminin">feminin</option>
+                                    </select>
+                                    <div *ngIf="submitted && usermed.sexe.errors && medecinvalue==false"
+                                        class="invalid-feedback">
+                                        <div *ngIf="usermed.sexe.errors.required && medecinvalue==false">
+                                            sexe est obligatoire</div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="input4">Cin :</label>
+                                    <input type="text" class="form-control" id="input4"
+                                        placeholder="Cin" formControlName="cin" pattern="[a-zA-Z/0-9]{1,30}" enabled>
+                                        <small class="text-danger" *ngIf="usermed.cin.errors?.pattern"> Cin Invalide</small>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                             
+                                <div class="form-group col-md-6">
+                                    <label for="input5">spécialité :</label>
+                                    <input type="text" id="input5" formControlName="specialite" class="form-control"
+                                        placeholder="specialite" pattern="^[a-zA-Z]+( [a-zA-Z]+)*$" enabled/>
+                                        <small class="text-danger" *ngIf="usermed.specialite.errors?.pattern"> Spécialité Invalide</small>
+
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="input6">Ville :</label>
+                                    <input type="text" class="form-control" id="input6"
+                                        placeholder="ville" formControlName="ville" pattern="^[a-zA-Z]+( [a-zA-Z]+)*$" enabled>
+                                        <small class="text-danger" *ngIf="usermed.ville.errors?.pattern"> Ville invalide</small>
+
+                                    </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="input7">Adresse :</label>
+                                    <input type="text" class="form-control" id="input7"
+                                        placeholder="adresse" formControlName="adresse" enabled>
+                                </div>
+                              
+                                
+                               
+
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="input8">Telephone :</label>
+                                    <input type="text" formControlName="telephone" id="input8" class="form-control"
+                                        placeholder="telephone" pattern="[0-9/+ ]{0,30}" enabled/>
+                                        <small class="text-danger" *ngIf="usermed.telephone.errors?.pattern"> Téléphone invalide</small>
+
+                                    </div>
+                                <div class="form-group col-md-6">
+                                    <label for="input9">Email
+                                        :</label> <label for="" style="color: red;">*</label>
+                                    <input type="text" id="input9" formControlName="email" class="form-control"
+                                        placeholder="email"
+                                        [ngClass]="{ 'is-invalid': submitted && usermed.email.errors && medecinvalue==false }" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}"
+                                        enabled/>
+                                    <div *ngIf="submitted && usermed.email.errors && medecinvalue==false"
+                                        class="invalid-feedback">
+                                        <div *ngIf="usermed.email.errors.required && medecinvalue==false">
+                                            email est obligatoire</div>
+                                      
+                                    </div>
+                                    <small class="text-danger" *ngIf="usermed.email.errors?.pattern"> Email invalide</small>
+
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button (click)="viderModal()" type="button" class="btn btn-sm btn-secondary" data-dismiss="modal"
+                 >Fermer</button>
+            <button [disabled] = "showbtn" class="btn btn-sm btn-info" (click)="onCreateMedecin()"> Ajouter</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ajouter user labo -->
+<div class="modal fade bd-example-modal-xl" id="creeUserLabo" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true" #addUserLabo>
+    <div class="modal-dialog modal-xl" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header">
+                <div class="card">
+                    <form [formGroup]="labo" (ngSubmit)="onUserLabo()">
+                        <div class="card-header card-header-danger">
+                            <h4 class="modal-title">Ajouter Nouveau User Labo </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="modal-body">
+
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="sel1">Nom :</label> <label for="" style="color: red;">
+                                            *</label>
+
+                                        <input  type="text" class="form-control"
+                                            placeholder="nom" formControlName="nom"
+                                            [ngClass]="{ 'is-invalid': submitted && userlabo.nom.errors && labovalue==false }" />
+                                        <div *ngIf="submitted && userlabo.nom.errors && labovalue==false"
+                                            class="invalid-feedback">
+                                            <div *ngIf="userlabo.nom.errors.required && labovalue==false">nom
+                                                est obligatoire</div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="sel1">Prénom
+                                            :</label> <label for="" style="color: red;">*</label>
+                                        <input  type="text"
+                                            formControlName="prenom" class="form-control" placeholder="Prénom"
+                                            [ngClass]="{ 'is-invalid': submitted && userlabo.prenom.errors && labovalue==false }">
+                                        <div *ngIf="submitted && userlabo.prenom.errors && labovalue==false"
+                                            class="invalid-feedback">
+                                            <div *ngIf="userlabo.prenom.errors.required && labovalue==false">
+                                                Prénom est obligatoire
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="sel1">Téléphone :</label>
+                                        <input type="text" formControlName="telephone" class="form-control"
+                                            placeholder="telephone" />
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="sel1">Email
+                                            :</label> <label for="" style="color: red;">*</label>
+                                        <input type="email" formControlName="email" class="form-control"
+                                            placeholder="email"
+                                            [ngClass]="{ 'is-invalid': submitted && userlabo.email.errors && labovalue==false }" />
+                                        <div *ngIf="submitted && userlabo.email.errors && labovalue==false"
+                                            class="invalid-feedback">
+                                            <div *ngIf="userlabo.email.errors.required && labovalue==false">
+                                                email is obligatoire</div>
+                                            <div *ngIf="userlabo.email.errors.email && labovalue==false">
+                                                L'e-mail doit être une adresse
+                                                e-mail valide</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+
+                                        <label for="sel1">Role :</label> <label for=""
+                                            style="color: red;">*</label>
+                                        <select class="form-control"  formControlName="role"
+                                            [ngClass]="{ 'is-invalid': submitted && userlabo.role.errors && labovalue==false }">
+                                            <option value="" disabled selected hidden>role utilisateur:</option>
+                                            <option value="userLabo" >user Labo</option>
+                                            <option value="adminLabo"
+                                                *ngIf="role=='adminSilogik'|| role=='labo'">admin Labo</option>
+                                            <option value="adminSilogik" *ngIf="role=='adminSilogik'">admin
+                                                Silogik</option>
+
+                                        </select>
+                                        <div *ngIf="submitted && userlabo.role.errors && labovalue==false"
+                                            class="invalid-feedback">
+                                            <div *ngIf="userlabo.role.errors.required && labovalue==false">role
+                                                est obligatoire
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="sel1">Adresse :</label>
+                                        <input type="text" class="form-control" id="inputPassword4"
+                                            placeholder="adresse" formControlName="adresse">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="sel1">Cin :</label>
+                                        <input type="text" class="form-control" 
+                                            placeholder="Cin" formControlName="cin">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="sel1">Sexe :</label> <label for=""
+                                            style="color: red;">*</label>
+                                        <select class="form-control"  formControlName="sexe"
+                                          
+                                            [ngClass]="{ 'is-invalid': submitted && userlabo.sexe.errors && labovalue==false }">
+                                            <option value="masculin" selected>masculin</option>
+                                            <option value="feminin">feminin</option>
+                                        </select>
+                                        <div *ngIf="submitted && userlabo.sexe.errors && labovalue==false"
+                                            class="invalid-feedback">
+                                            <div *ngIf="userlabo.sexe.errors.required && labovalue==false">sexe
+                                                est obligatoire
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal"
+                               >Fermer</button>
+
+                            <button class="btn btn-info"> Ajouter</button>
+
+                        </div>
+                    </form>
+                </div>
+                <!--/.card-->
+            </div>
+            <!--/.modal header-->
+        </div>
+    </div>
+</div>
+<!-- open crr -->
+    <div *ngIf='open' id="myModal" class="modal fade" role="dialog" tabindex="-1" role="dialog"
+        aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <iframe [src]='urlSafe'  frameborder="0" webkitallowfullscreen
+                    mozallowfullscreen allowfullscreen>
+                </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- modal pour ajouter un fichier excel -->
+    <div  id="ModalFichier" class="modal fade" role="dialog" tabindex="-1" role="dialog"
+        aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="test modal-dialog" role="document">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                  
+                    hdjkhdkjhdkjqhsd
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <ng-template class="back" #content let-modal>
+        <div>
+            <div *ngFor="let data of emails">
+                {{data}}
+            </div>
+        </div>
+    </ng-template>
+    
